@@ -1,11 +1,12 @@
 import csv
 import time
 import os
+import math
 from math import sqrt
 from beamngpy import BeamNGpy, Scenario, Vehicle, set_up_simple_logging
 from beamngpy.sensors import AdvancedIMU
 
-# --- FUNGSI UNTUK MENYIMPAN DATA (Tidak ada perubahan) ---
+# --- FUNGSI UNTUK MENYIMPAN DATA ---
 def save_data_to_csv(filepath, data):
     """Menyimpan data sensor ke file CSV."""
     os.makedirs(os.path.dirname(filepath), exist_ok=True)
@@ -16,7 +17,7 @@ def save_data_to_csv(filepath, data):
         writer.writerows(data)
     print(f"Data berhasil disimpan di: {filepath}")
 
-# --- KONFIGURASI UTAMA (Tidak ada perubahan) ---
+# --- KONFIGURASI UTAMA ---
 SIMULATOR_PATH = 'D:\\BeamNG\\BeamNG.tech.v0.32.5.0\\'
 BNG_USER = "C:\\Users\\Brenda\\AppData\\Local\\BeamNG.drive"
 CRASH_THRESHOLD_G = 20.0
@@ -27,7 +28,7 @@ def main():
     beamng = BeamNGpy('localhost', 64256, home=SIMULATOR_PATH, user=BNG_USER)
     
     variations = [
-        ('tabrakan_frontal', 70, {'pos': (-700, 105, 118), 'rot_quat': (0, 0, 0.3826834, 0.9238795)}),
+        ('tabrakan_frontal', 70, {'pos': (-660.4, 157.6, 118), 'rot_quat': (0, 0, 0.9238795, -0.3826834)}),
         # ('tabrakan_samping_kiri', 60, {'pos': (5, -50, 100), 'rot_quat': (0, 0, 1, 0)}),
     ]
 
@@ -48,7 +49,7 @@ def main():
                 other_pos = pos2['pos']
                 
                 scenario.add_vehicle(ego_vehicle, pos=ego_pos, rot_quat=(0, 0, 0.3826834, 0.9238795))
-                scenario.add_vehicle(other_vehicle, pos=pos2['pos'], rot_quat=pos2['rot_quat'])
+                scenario.add_vehicle(other_vehicle, pos=other_pos, rot_quat=pos2['rot_quat'])
                 
                 scenario.make(bng)
                 bng.scenario.load(scenario)
@@ -60,18 +61,15 @@ def main():
                 # Buat instance dari kelas AdvancedIMU secara langsung
                 imu = AdvancedIMU('ego_imu', bng, ego_vehicle, is_send_immediately=True)
                 
-                # ego_target_pos = (ego_pos[0], -100, ego_pos[2])
-                # other_target_pos = (other_pos[0], 100, other_pos[2])
+                # 2. Berikan perintah ke mobil EGO
+                ego_vehicle.ai_set_mode('span')
+                ego_vehicle.ai_set_target(ego_pos, 'position')
+                ego_vehicle.ai_set_speed(speed_kph / 3.6, 'speed')
                 
-                # # 2. Berikan perintah ke mobil EGO
-                # ego_vehicle.ai_set_mode('span')
-                # ego_vehicle.ai_set_target(ego_target_pos, 'position')
-                # ego_vehicle.ai_set_speed(speed_kph / 3.6, 'speed')
-                
-                # # 3. Berikan perintah ke mobil LAIN
-                # other_vehicle.ai_set_mode('span')
-                # other_vehicle.ai_set_target(other_target_pos, 'position')
-                # other_vehicle.ai_set_speed(speed_kph / 3.6, 'speed')
+                # 3. Berikan perintah ke mobil LAIN
+                other_vehicle.ai_set_mode('span')
+                other_vehicle.ai_set_target(other_pos, 'position')
+                other_vehicle.ai_set_speed(speed_kph / 3.6, 'speed')
                 
                 is_crashed = False
                 crash_time = None
@@ -82,9 +80,11 @@ def main():
                     
                     readings = imu.poll()
                     
+                    if readings['time'] is None: continue
+
                     current_time = readings['time']
-                    accel = readings['accRaw']  # Formatnya [x, y, z]
-                    gyro = readings['angVel']   # Formatnya [x, y, z]
+                    accel = readings['accRaw']
+                    gyro = readings['angVel']
                     
                     # Gabungkan data untuk disimpan
                     row = [current_time] + accel + gyro
@@ -107,7 +107,7 @@ def main():
                     filename = f'data/{name}_{speed_kph}kph_trial_{str(trial).zfill(2)}.csv'
                     save_data_to_csv(filename, sensor_data)
                 
-                # --- ADDED: Hapus sensor setelah selesai untuk kebersihan ---
+                # --- ADDED: Hapus sensor setelah selesai ---
                 imu.remove()
 
     finally:
