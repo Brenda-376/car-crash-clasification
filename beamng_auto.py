@@ -28,7 +28,6 @@ def main():
     set_up_simple_logging()
     beamng = BeamNGpy('localhost', 64256, home=SIMULATOR_PATH, user=BNG_USER)
     
-    # ego_pos = (-717, 101, 118)
     ego_pos = (-661, 157, 118)
     ego_rot_quat = (0, 0, 0.3826834, 0.9238795) # Rotasi 45 derajat
     
@@ -39,11 +38,9 @@ def main():
     # --- KALKULASI POSISI & ROTASI MOBIL TARGET ---
     
     # 1. Hitung sudut rotasi ego dari quaternion
-    # w = cos(angle/2), jadi angle = 2 * acos(w)
     ego_angle_rad = 2 * math.atan2(ego_rot_quat[2], ego_rot_quat[3])
     
     # 2. Tentukan vektor arah "depan" dari mobil ego
-    # Model mobil di BeamNG biasanya menghadap sumbu +X secara default
     fwd_vec_x = math.cos(ego_angle_rad)
     fwd_vec_y = math.sin(ego_angle_rad)
     
@@ -106,8 +103,14 @@ def main():
                 while True:
                     bng.step(1)
 
-                    ego_vehicle.control(throttle=1.0, steering=0)
-                    other_vehicle.control(throttle=1.0, steering=0)
+                    # ego_vehicle.control(throttle=1.0, steering=0)
+                    # other_vehicle.control(throttle=1.0, steering=0)
+
+                    # --- Logging Posisi Ego Vehicle ---
+                    ego_vehicle.poll_state()
+                    current_pos = ego_vehicle.state['pos']
+                    print(f"Posisi Ego: X={current_pos[0]:>8.2f}, Y={current_pos[1]:>8.2f}, Z={current_pos[2]:>8.2f}", end='\r')
+                    # -----------------------------------------
                     
                     readings = imu.poll()
                     
@@ -134,12 +137,14 @@ def main():
                     #     print("Timeout, tidak ada tabrakan terdeteksi.")
                     #     break
 
+                print()
+
                 if is_crashed:
                     # filename = f'data/{name}_{speed_kph}kph_trial_{str(trial).zfill(2)}.csv'
                     filename = f'data/{name}_trial_{str(trial).zfill(2)}.csv'
                     save_data_to_csv(filename, sensor_data)
                 
-                # --- ADDED: Hapus sensor setelah selesai ---
+                # --- Hapus sensor setelah selesai ---
                 imu.remove()
 
     finally:
