@@ -103,14 +103,8 @@ def main():
                 while True:
                     bng.step(1)
 
-                    # ego_vehicle.control(throttle=1.0, steering=0)
-                    # other_vehicle.control(throttle=1.0, steering=0)
-
-                    # --- Logging Posisi Ego Vehicle ---
-                    ego_vehicle.poll_state()
-                    current_pos = ego_vehicle.state['pos']
-                    print(f"Posisi Ego: X={current_pos[0]:>8.2f}, Y={current_pos[1]:>8.2f}, Z={current_pos[2]:>8.2f}", end='\r')
-                    # -----------------------------------------
+                    ego_vehicle.control(throttle=1.0, steering=0)
+                    other_vehicle.control(throttle=1.0, steering=0)
                     
                     readings = imu.poll()
                     
