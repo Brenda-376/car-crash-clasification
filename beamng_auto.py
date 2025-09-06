@@ -98,21 +98,20 @@ def main():
                     
                     # --- PERBAIKAN DI SINI ---
                     lidar_data = lidar.poll()
-                    if lidar_data and 'pointCloud' in lidar_data:
-                        # 1. Konversi list mentah menjadi NumPy array
-                        points_np = np.array(lidar_data['pointCloud'])
-                        colors_np = np.array(lidar_data['colours'])
+                    # 1. Konversi list mentah menjadi NumPy array
+                    points_np = np.array(lidar_data['pointCloud'])
+                    colors_np = np.array(lidar_data['colours'])
 
-                        # 2. Lakukan safety check pada array yang baru dibuat
-                        if points_np.size > 0 and colors_np.size > 0:
-                            # 3. Sekarang .reshape() akan bekerja
-                            points = points_np.reshape(-1, 3)
-                            colors = colors_np.reshape(-1, 4)
-                            num_points = points.shape[0]
-                            
-                            time_col = np.full((num_points, 1), current_time)
-                            combined_block = np.hstack((time_col, points, colors))
-                            lidar_stream_data.append(combined_block)
+                    # 2. Lakukan safety check pada array yang baru dibuat
+                    if points_np.size > 0 and colors_np.size > 0:
+                        # 3. Sekarang .reshape() akan bekerja
+                        points = points_np.reshape(-1, 3)
+                        colors = colors_np.reshape(-1, 4)
+                        num_points = points.shape[0]
+                        
+                        time_col = np.full((num_points, 1), current_time)
+                        combined_block = np.hstack((time_col, points, colors))
+                        lidar_stream_data.append(combined_block)
                     # --------------------------------------------------------------------
                     
                     g_force = sqrt(accel[0]**2 + accel[1]**2 + accel[2]**2) / 9.81
