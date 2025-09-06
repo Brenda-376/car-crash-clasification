@@ -76,9 +76,9 @@ def main():
                     bng.step(1)
 
                 imu = AdvancedIMU('ego_imu', bng, ego_vehicle, is_send_immediately=True)
-                lidar = Lidar('lidar_360', bng, ego_vehicle,
+                lidar = Lidar('lidar_360', bng, ego_vehicle, requested_update_time= 0.05,
                               pos=(0, 0, 1.7), is_360_mode=True, vertical_angle=26.9,
-                              vertical_resolution=64, frequency=20, max_distance=120,
+                              vertical_resolution=64, frequency=50, max_distance=120,
                               is_streaming=True, is_visualised=True)
                 
                 is_crashed = False
