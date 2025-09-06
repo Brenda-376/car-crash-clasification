@@ -28,7 +28,7 @@ def save_lidar_data_to_csv(filepath, final_lidar_array):
 
 SIMULATOR_PATH = 'D:\\BeamNG\\BeamNG.tech.v0.32.5.0\\'
 BNG_USER = "C:\\Users\\Brenda\\AppData\\Local\\BeamNG.drive"
-CRASH_THRESHOLD_G = 9.0
+CRASH_THRESHOLD_G = 5.0
 RECORD_DURATION_AFTER_CRASH = 3
 TRIAL_COUNT = 15
 
