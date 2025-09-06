@@ -3,12 +3,12 @@ import time
 import os
 import math
 from math import sqrt
+import numpy as np
 from beamngpy import BeamNGpy, Scenario, Vehicle, set_up_simple_logging
 from beamngpy.sensors import AdvancedIMU, Lidar
 
-# --- FUNGSI UNTUK MENYIMPAN DATA IMU ---
+# --- FUNGSI UNTUK MENYIMPAN DATA IMU (Tidak berubah) ---
 def save_data_to_csv(filepath, data):
-    """Menyimpan data sensor IMU ke file CSV."""
     os.makedirs(os.path.dirname(filepath), exist_ok=True)
     header = ['time', 'accelX', 'accelY', 'accelZ', 'gyroX', 'gyroY', 'gyroZ']
     with open(filepath, 'w', newline='') as f:
@@ -17,22 +17,18 @@ def save_data_to_csv(filepath, data):
         writer.writerows(data)
     print(f"Data IMU berhasil disimpan di: {filepath}")
 
-# --- ADDED: FUNGSI BARU UNTUK MENYIMPAN DATA LIDAR ---
-def save_lidar_data_to_csv(filepath, point_cloud):
-    """Menyimpan data point cloud Lidar ke file CSV."""
+# --- CHANGED: FUNGSI UNTUK MENYIMPAN STREAMING DATA LIDAR ---
+def save_lidar_data_to_csv(filepath, streaming_data):
+    """Menyimpan data streaming Lidar (timestamp, x, y, z, ...) ke file CSV."""
     os.makedirs(os.path.dirname(filepath), exist_ok=True)
-    header = ['x', 'y', 'z', 'intensity', 'r', 'g', 'b']
+    header = ['time', 'x', 'y', 'z', 'r', 'g', 'b', 'a']
     with open(filepath, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(header)
-        for point in point_cloud:
-            pos = point.get('pos', (None, None, None))
-            intensity = point.get('intensity', 0)
-            color = point.get('color', (0, 0, 0))
-            writer.writerow([pos[0], pos[1], pos[2], intensity, color[0], color[1], color[2]])
+        writer.writerows(streaming_data) # Langsung tulis semua baris yang sudah dikumpulkan
     print(f"Data Lidar berhasil disimpan di: {filepath}")
 
-# --- KONFIGURASI UTAMA ---
+# --- (Konfigurasi Utama tidak berubah) ---
 SIMULATOR_PATH = 'D:\\BeamNG\\BeamNG.tech.v0.32.5.0\\'
 BNG_USER = "C:\\Users\\Brenda\\AppData\\Local\\BeamNG.drive"
 CRASH_THRESHOLD_G = 10.0
@@ -80,18 +76,16 @@ def main():
                     bng.step(1)
 
                 imu = AdvancedIMU('ego_imu', bng, ego_vehicle, is_send_immediately=True)
-                # ADDED: Buat instance sensor Lidar
-                # lidar = Lidar('lidar_360', bng, ego_vehicle,
-                #               pos=(0, 0, 1.7), fov=360, angle=20,
-                #               resolution=(1024, 64), max_dist=200)
-                lidar = Lidar('lidar_360', bng, ego_vehicle, requested_update_time= 0.2, vertical_resolution= 64, vertical_angle= 26.9, frequency= 20,
-                              pos=(0, 0, 1.7), is_360_mode=360, is_streaming=True, max_distance=120)
+                lidar = Lidar('lidar_360', bng, ego_vehicle,
+                              pos=(0, 0, 1.7), is_360_mode=True, vertical_angle=26.9,
+                              vertical_resolution=64, frequency=20, max_distance=120,
+                              is_streaming=True, is_visualised=True)
                 
                 is_crashed = False
                 crash_time = None
-                sensor_data = []
-                # ADDED: Variabel untuk menyimpan snapshot Lidar
-                lidar_data_at_crash = None
+                imu_sensor_data = []
+                # ADDED: List untuk menampung semua data Lidar
+                lidar_stream_data = []
 
                 while True:
                     bng.step(1)
@@ -106,16 +100,25 @@ def main():
                     accel = readings_imu['accRaw']
                     gyro = readings_imu['angVel']
                     
-                    row = [current_time] + accel + gyro
-                    sensor_data.append(row)
+                    row_imu = [current_time] + accel + gyro
+                    imu_sensor_data.append(row_imu)
+                    
+                    # --- ADDED: Mengambil dan memproses data Lidar di setiap frame ---
+                    lidar_data = lidar.poll()
+                    if lidar_data and 'pointCloud' in lidar_data:
+                        points = lidar_data['pointCloud'].reshape(-1, 3)
+                        colors = lidar_data['colours'].reshape(-1, 4)
+                        for point, color in zip(points, colors):
+                            row_lidar = [current_time, point[0], point[1], point[2], color[0], color[1], color[2], color[3]]
+                            lidar_stream_data.append(row_lidar)
+                    # --------------------------------------------------------------------
                     
                     g_force = sqrt(accel[0]**2 + accel[1]**2 + accel[2]**2) / 9.81
                     if not is_crashed and g_force > CRASH_THRESHOLD_G:
-                        print(f"Tabrakan terdeteksi pada {g_force:.2f} G!")
+                        print(f"\nTabrakan terdeteksi pada {g_force:.2f} G!")
                         is_crashed = True
                         crash_time = current_time
-                        # ADDED: Ambil snapshot Lidar saat tabrakan
-                        lidar_data_at_crash = lidar.poll()
+                        # Tidak perlu lagi snapshot, karena data sudah di-stream
 
                     if is_crashed and (current_time - crash_time > RECORD_DURATION_AFTER_CRASH):
                         break
@@ -123,16 +126,14 @@ def main():
                 print()
 
                 if is_crashed:
-                    # Simpan data IMU seperti biasa
+                    # Simpan data IMU
                     filename_imu = f'data/{name}_trial_{str(trial).zfill(2)}.csv'
-                    save_data_to_csv(filename_imu, sensor_data)
+                    save_data_to_csv(filename_imu, imu_sensor_data)
                     
-                    # ADDED: Simpan data Lidar jika ada
-                    if lidar_data_at_crash and 'pointCloud' in lidar_data_at_crash:
-                        filename_lidar = f'data/{name}_trial_{str(trial).zfill(2)}_lidar.csv'
-                        save_lidar_data_to_csv(filename_lidar, lidar_data_at_crash['pointCloud'])
+                    # Simpan data Lidar
+                    filename_lidar = f'data/{name}_trial_{str(trial).zfill(2)}_lidar.csv'
+                    save_lidar_data_to_csv(filename_lidar, lidar_stream_data)
                 
-                # Hapus kedua sensor
                 imu.remove()
                 lidar.remove()
 
