@@ -105,6 +105,7 @@ def main():
                     
                     # --- ADDED: Mengambil dan memproses data Lidar di setiap frame ---
                     lidar_data = lidar.poll()
+                    print(lidar_data)
                     if lidar_data and 'pointCloud' in lidar_data:
                         points = lidar_data['pointCloud'].reshape(-1, 3)
                         colors = lidar_data['colours'].reshape(-1, 4)
