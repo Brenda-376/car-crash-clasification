@@ -76,8 +76,8 @@ def main():
                     bng.step(1)
 
                 imu = AdvancedIMU('ego_imu', bng, ego_vehicle, is_send_immediately=True)
-                lidar = Lidar('lidar_360', bng, ego_vehicle, is_360_mode=True, vertical_angle=26.9,
-                              vertical_resolution=64, frequency=5, max_distance=120, is_streaming=True)
+                # lidar = Lidar('lidar_360', bng, ego_vehicle, is_360_mode=True, vertical_angle=26.9,
+                #               vertical_resolution=64, frequency=5, max_distance=120, is_streaming=True)
                 
                 is_crashed = False
                 crash_time = None
@@ -100,19 +100,19 @@ def main():
                     imu_sensor_data.append(row_imu)
                     
                     # Mengambil dan memproses data Lidar menggunakan NumPy ---
-                    lidar_data = lidar.poll()
-                    points = lidar_data['pointCloud'].reshape(-1, 3)
-                    colors = lidar_data['colours'].reshape(-1, 4)
-                    num_points = points.shape[0]
+                    # lidar_data = lidar.poll()
+                    # points = lidar_data['pointCloud'].reshape(-1, 3)
+                    # colors = lidar_data['colours'].reshape(-1, 4)
+                    # num_points = points.shape[0]
                     
-                    # 1. Buat kolom timestamp
-                    time_col = np.full((num_points, 1), current_time)
+                    # # 1. Buat kolom timestamp
+                    # time_col = np.full((num_points, 1), current_time)
                     
-                    # 2. Gabungkan semua array secara horizontal
-                    combined_block = np.hstack((time_col, points, colors))
+                    # # 2. Gabungkan semua array secara horizontal
+                    # combined_block = np.hstack((time_col, points, colors))
                     
-                    # 3. Tambahkan blok data ke list
-                    lidar_stream_data.append(combined_block)
+                    # # 3. Tambahkan blok data ke list
+                    # lidar_stream_data.append(combined_block)
                     # --------------------------------------------------------------------
                     
                     g_force = sqrt(accel[0]**2 + accel[1]**2 + accel[2]**2) / 9.81
@@ -131,13 +131,13 @@ def main():
                     save_data_to_csv(filename_imu, imu_sensor_data)
                     
                     # --- CHANGED: Gabungkan semua blok data Lidar sebelum menyimpan ---
-                    if lidar_stream_data:
-                        final_lidar_array = np.vstack(lidar_stream_data)
-                        filename_lidar = f'data/{name}_trial_{str(trial).zfill(2)}_lidar.csv'
-                        save_lidar_data_to_csv(filename_lidar, final_lidar_array)
+                    # if lidar_stream_data:
+                    #     final_lidar_array = np.vstack(lidar_stream_data)
+                    #     filename_lidar = f'data/{name}_trial_{str(trial).zfill(2)}_lidar.csv'
+                    #     save_lidar_data_to_csv(filename_lidar, final_lidar_array)
                 
                 imu.remove()
-                lidar.remove()
+                # lidar.remove()
                 bng.scenario.stop()
 
     finally:
