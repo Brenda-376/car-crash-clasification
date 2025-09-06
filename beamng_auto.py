@@ -40,7 +40,7 @@ def main():
     beamng = BeamNGpy('localhost', 64256, home=SIMULATOR_PATH, user=BNG_USER)
     
     # ... (Bagian Kalkulasi Posisi tidak berubah) ...
-    ego_pos = (-661, 157, 105)
+    ego_pos = (-661, 157, 100)
     ego_rot_quat = (0, 0, 0.3826834, 0.9238795)
     distance_m = 120
     speed_kph = 70
