@@ -17,15 +17,15 @@ def save_data_to_csv(filepath, data):
         writer.writerows(data)
     print(f"Data IMU berhasil disimpan di: {filepath}")
 
-# --- CHANGED: FUNGSI UNTUK MENYIMPAN STREAMING DATA LIDAR ---
-def save_lidar_data_to_csv(filepath, streaming_data):
-    """Menyimpan data streaming Lidar (timestamp, x, y, z, ...) ke file CSV."""
+# --- CHANGED: Fungsi save_lidar_data_to_csv sekarang menerima satu NumPy array besar ---
+def save_lidar_data_to_csv(filepath, final_lidar_array):
+    """Menyimpan data streaming Lidar dari satu NumPy array besar ke file CSV."""
     os.makedirs(os.path.dirname(filepath), exist_ok=True)
     header = ['time', 'x', 'y', 'z', 'r', 'g', 'b', 'a']
     with open(filepath, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(header)
-        writer.writerows(streaming_data) # Langsung tulis semua baris yang sudah dikumpulkan
+        writer.writerows(final_lidar_array) # Langsung tulis NumPy array
     print(f"Data Lidar berhasil disimpan di: {filepath}")
 
 # --- (Konfigurasi Utama tidak berubah) ---
@@ -76,16 +76,13 @@ def main():
                     bng.step(1)
 
                 imu = AdvancedIMU('ego_imu', bng, ego_vehicle, is_send_immediately=True)
-                lidar = Lidar('lidar_360', bng, ego_vehicle, requested_update_time= 0.2,
-                              pos=(0, 0, 1.7), is_360_mode=True, vertical_angle=26.9,
-                              vertical_resolution=64, frequency=5, max_distance=120,
-                              is_streaming=True, is_visualised=True)
+                lidar = Lidar('lidar_360', bng, ego_vehicle, is_360_mode=True, vertical_angle=26.9,
+                              vertical_resolution=64, frequency=5, max_distance=120, is_streaming=True)
                 
                 is_crashed = False
                 crash_time = None
                 imu_sensor_data = []
-                # ADDED: List untuk menampung semua data Lidar
-                lidar_stream_data = []
+                lidar_stream_data = [] # List ini sekarang akan berisi blok-blok NumPy array
 
                 while True:
                     bng.step(1)
@@ -93,25 +90,29 @@ def main():
                     other_vehicle.control(throttle=1.0, steering=0)
                     
                     readings_imu = imu.poll()
-
                     if readings_imu['time'] is None: continue
-
                     current_time = readings_imu['time']
+                    
+                    # Proses data IMU
                     accel = readings_imu['accRaw']
                     gyro = readings_imu['angVel']
-                    
                     row_imu = [current_time] + accel + gyro
                     imu_sensor_data.append(row_imu)
                     
-                    # --- ADDED: Mengambil dan memproses data Lidar di setiap frame ---
+                    # Mengambil dan memproses data Lidar menggunakan NumPy ---
                     lidar_data = lidar.poll()
+                    points = lidar_data['pointCloud'].reshape(-1, 3)
+                    colors = lidar_data['colours'].reshape(-1, 4)
+                    num_points = points.shape[0]
                     
-                    if lidar_data and 'pointCloud' in lidar_data:
-                        points = lidar_data['pointCloud'].reshape(-1, 3)
-                        colors = lidar_data['colours'].reshape(-1, 4)
-                        for point, color in zip(points, colors):
-                            row_lidar = [current_time, point[0], point[1], point[2], color[0], color[1], color[2], color[3]]
-                            lidar_stream_data.append(row_lidar)
+                    # 1. Buat kolom timestamp
+                    time_col = np.full((num_points, 1), current_time)
+                    
+                    # 2. Gabungkan semua array secara horizontal
+                    combined_block = np.hstack((time_col, points, colors))
+                    
+                    # 3. Tambahkan blok data ke list
+                    lidar_stream_data.append(combined_block)
                     # --------------------------------------------------------------------
                     
                     g_force = sqrt(accel[0]**2 + accel[1]**2 + accel[2]**2) / 9.81
@@ -119,7 +120,6 @@ def main():
                         print(f"\nTabrakan terdeteksi pada {g_force:.2f} G!")
                         is_crashed = True
                         crash_time = current_time
-                        # Tidak perlu lagi snapshot, karena data sudah di-stream
 
                     if is_crashed and (current_time - crash_time > RECORD_DURATION_AFTER_CRASH):
                         break
@@ -127,16 +127,18 @@ def main():
                 print()
 
                 if is_crashed:
-                    # Simpan data IMU
                     filename_imu = f'data/{name}_trial_{str(trial).zfill(2)}.csv'
                     save_data_to_csv(filename_imu, imu_sensor_data)
                     
-                    # Simpan data Lidar
-                    filename_lidar = f'data/{name}_trial_{str(trial).zfill(2)}_lidar.csv'
-                    save_lidar_data_to_csv(filename_lidar, lidar_stream_data)
+                    # --- CHANGED: Gabungkan semua blok data Lidar sebelum menyimpan ---
+                    if lidar_stream_data:
+                        final_lidar_array = np.vstack(lidar_stream_data)
+                        filename_lidar = f'data/{name}_trial_{str(trial).zfill(2)}_lidar.csv'
+                        save_lidar_data_to_csv(filename_lidar, final_lidar_array)
                 
                 imu.remove()
                 lidar.remove()
+                bng.scenario.stop()
 
     finally:
         bng.close()
