@@ -105,20 +105,7 @@ def main():
                     
                     # --- ADDED: Mengambil dan memproses data Lidar di setiap frame ---
                     lidar_data = lidar.poll()
-                    current_pos = ego_vehicle.state['pos']
-                    num_valid_points = 0
-                    if lidar_data and 'pointCloud' in lidar_data and lidar_data['pointCloud'].size > 0:
-                        points = lidar_data['pointCloud'].reshape(-1, 3)
-                        
-                        # Filter untuk menghitung titik yang bukan (0, 0, 0)
-                        # Ini memberikan jumlah titik yang sebenarnya terdeteksi
-                        valid_points_mask = np.sum(np.abs(points), axis=1) > 0
-                        num_valid_points = np.count_nonzero(valid_points_mask)
-
-                    # 3. Cetak informasi ke terminal
-                    print(f"Posisi Ego: X={current_pos[0]:>8.2f} | Poin Lidar Valid: {num_valid_points:<7}", end='\r')
                     
-
                     if lidar_data and 'pointCloud' in lidar_data:
                         points = lidar_data['pointCloud'].reshape(-1, 3)
                         colors = lidar_data['colours'].reshape(-1, 4)
