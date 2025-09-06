@@ -93,7 +93,7 @@ def main():
                     other_vehicle.control(throttle=1.0, steering=0)
                     
                     readings_imu = imu.poll()
-                    
+
                     if readings_imu['time'] is None: continue
 
                     current_time = readings_imu['time']
@@ -105,17 +105,20 @@ def main():
                     
                     # --- ADDED: Mengambil dan memproses data Lidar di setiap frame ---
                     lidar_data = lidar.poll()
-                    print(lidar_data)
+                    current_pos = ego_vehicle.state['pos']
+                    num_valid_points = 0
                     if lidar_data and 'pointCloud' in lidar_data and lidar_data['pointCloud'].size > 0:
-                        # Reshape pointCloud menjadi (N, 3) untuk mendapatkan dimensinya
                         points = lidar_data['pointCloud'].reshape(-1, 3)
                         
-                        # Reshape colours menjadi (N, 4) untuk mendapatkan dimensinya
-                        colors = lidar_data['colours'].reshape(-1, 4)
-                        
-                        # Cetak dimensinya
-                        print(f"Dimensi Point Cloud: {points.shape} (Titik, Koordinat) | Dimensi Warna: {colors.shape} (Titik, RGBA)", end='\r')
-                        
+                        # Filter untuk menghitung titik yang bukan (0, 0, 0)
+                        # Ini memberikan jumlah titik yang sebenarnya terdeteksi
+                        valid_points_mask = np.sum(np.abs(points), axis=1) > 0
+                        num_valid_points = np.count_nonzero(valid_points_mask)
+
+                    # 3. Cetak informasi ke terminal
+                    print(f"Posisi Ego: X={current_pos[0]:>8.2f} | Poin Lidar Valid: {num_valid_points:<7}", end='\r')
+                    
+
                     if lidar_data and 'pointCloud' in lidar_data:
                         points = lidar_data['pointCloud'].reshape(-1, 3)
                         colors = lidar_data['colours'].reshape(-1, 4)
