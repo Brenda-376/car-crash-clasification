@@ -81,9 +81,12 @@ def main():
 
                 imu = AdvancedIMU('ego_imu', bng, ego_vehicle, is_send_immediately=True)
                 # ADDED: Buat instance sensor Lidar
-                lidar = Lidar('lidar_360', bng, ego_vehicle,
-                              pos=(0, 0, 1.7), fov=360, angle=20,
-                              resolution=(1024, 64), max_dist=200)
+                # lidar = Lidar('lidar_360', bng, ego_vehicle,
+                #               pos=(0, 0, 1.7), fov=360, angle=20,
+                #               resolution=(1024, 64), max_dist=200)
+                lidar = Lidar('lidar_360', bng, ego_vehicle, requested_update_time= 0.2, vertical_resolution= 64, vertical_angle= 26.9, frequency= 20,
+                              pos=(0, 0, 1.7), is_360_mode=360, is_streaming=True,
+                              resolution=(1024, 64), max_distance=120)
                 
                 is_crashed = False
                 crash_time = None
