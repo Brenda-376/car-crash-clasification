@@ -7,7 +7,7 @@ import numpy as np
 from beamngpy import BeamNGpy, Scenario, Vehicle, set_up_simple_logging
 from beamngpy.sensors import AdvancedIMU, Lidar
 
-# --- FUNGSI UNTUK MENYIMPAN DATA IMU (Tidak berubah) ---
+# --- (Fungsi-fungsi di atas tidak berubah) ---
 def save_data_to_csv(filepath, data):
     os.makedirs(os.path.dirname(filepath), exist_ok=True)
     header = ['time', 'accelX', 'accelY', 'accelZ', 'gyroX', 'gyroY', 'gyroZ']
@@ -17,18 +17,15 @@ def save_data_to_csv(filepath, data):
         writer.writerows(data)
     print(f"Data IMU berhasil disimpan di: {filepath}")
 
-# --- CHANGED: Fungsi save_lidar_data_to_csv sekarang menerima satu NumPy array besar ---
 def save_lidar_data_to_csv(filepath, final_lidar_array):
-    """Menyimpan data streaming Lidar dari satu NumPy array besar ke file CSV."""
     os.makedirs(os.path.dirname(filepath), exist_ok=True)
     header = ['time', 'x', 'y', 'z', 'r', 'g', 'b', 'a']
     with open(filepath, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(header)
-        writer.writerows(final_lidar_array) # Langsung tulis NumPy array
+        writer.writerows(final_lidar_array)
     print(f"Data Lidar berhasil disimpan di: {filepath}")
 
-# --- (Konfigurasi Utama tidak berubah) ---
 SIMULATOR_PATH = 'D:\\BeamNG\\BeamNG.tech.v0.32.5.0\\'
 BNG_USER = "C:\\Users\\Brenda\\AppData\\Local\\BeamNG.drive"
 CRASH_THRESHOLD_G = 9.0
@@ -72,17 +69,18 @@ def main():
                 bng.scenario.load(scenario)
                 bng.scenario.start()
                 
-                for _ in range(60):
-                    bng.step(1)
+                # for _ in range(60):
+                #     bng.step(1)
 
                 imu = AdvancedIMU('ego_imu', bng, ego_vehicle, is_send_immediately=True)
-                lidar = Lidar('lidar_360', bng, ego_vehicle, requested_update_time=0.2, is_360_mode=True, vertical_angle=26.9,
-                              is_using_shared_memory=False, vertical_resolution=64, frequency=5, max_distance=150, is_streaming=True)
+                lidar = Lidar('lidar_360', bng, ego_vehicle, requested_update_time=0.2, is_360_mode=True, 
+                              vertical_angle=26.9, is_using_shared_memory=False, vertical_resolution=64, 
+                              frequency=5, max_distance=150, is_streaming=True)
                 
                 is_crashed = False
                 crash_time = None
                 imu_sensor_data = []
-                lidar_stream_data = [] # List ini sekarang akan berisi blok-blok NumPy array
+                lidar_stream_data = []
 
                 while True:
                     bng.step(1)
@@ -93,26 +91,28 @@ def main():
                     if readings_imu['time'] is None: continue
                     current_time = readings_imu['time']
                     
-                    # Proses data IMU
                     accel = readings_imu['accRaw']
                     gyro = readings_imu['angVel']
                     row_imu = [current_time] + accel + gyro
                     imu_sensor_data.append(row_imu)
                     
-                    # Mengambil dan memproses data Lidar menggunakan NumPy ---
+                    # --- PERBAIKAN DI SINI ---
                     lidar_data = lidar.poll()
-                    points = lidar_data['pointCloud'].reshape(-1, 3)
-                    colors = lidar_data['colours'].reshape(-1, 4)
-                    num_points = points.shape[0]
-                    
-                    # 1. Buat kolom timestamp
-                    time_col = np.full((num_points, 1), current_time)
-                    
-                    # 2. Gabungkan semua array secara horizontal
-                    combined_block = np.hstack((time_col, points, colors))
-                    
-                    # 3. Tambahkan blok data ke list
-                    lidar_stream_data.append(combined_block)
+                    if lidar_data and 'pointCloud' in lidar_data:
+                        # 1. Konversi list mentah menjadi NumPy array
+                        points_np = np.array(lidar_data['pointCloud'])
+                        colors_np = np.array(lidar_data['colours'])
+
+                        # 2. Lakukan safety check pada array yang baru dibuat
+                        if points_np.size > 0 and colors_np.size > 0:
+                            # 3. Sekarang .reshape() akan bekerja
+                            points = points_np.reshape(-1, 3)
+                            colors = colors_np.reshape(-1, 4)
+                            num_points = points.shape[0]
+                            
+                            time_col = np.full((num_points, 1), current_time)
+                            combined_block = np.hstack((time_col, points, colors))
+                            lidar_stream_data.append(combined_block)
                     # --------------------------------------------------------------------
                     
                     g_force = sqrt(accel[0]**2 + accel[1]**2 + accel[2]**2) / 9.81
@@ -130,14 +130,13 @@ def main():
                     filename_imu = f'data/{name}_trial_{str(trial).zfill(2)}.csv'
                     save_data_to_csv(filename_imu, imu_sensor_data)
                     
-                    # --- CHANGED: Gabungkan semua blok data Lidar sebelum menyimpan ---
                     if lidar_stream_data:
                         final_lidar_array = np.vstack(lidar_stream_data)
                         filename_lidar = f'data/{name}_trial_{str(trial).zfill(2)}_lidar.csv'
                         save_lidar_data_to_csv(filename_lidar, final_lidar_array)
                 
                 imu.remove()
-                # lidar.remove()
+                lidar.remove() 
                 bng.scenario.stop()
 
     finally:
