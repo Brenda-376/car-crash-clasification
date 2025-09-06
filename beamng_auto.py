@@ -40,7 +40,7 @@ def main():
     beamng = BeamNGpy('localhost', 64256, home=SIMULATOR_PATH, user=BNG_USER)
     
     # ... (Bagian Kalkulasi Posisi tidak berubah) ...
-    ego_pos = (-661, 157, 90)
+    ego_pos = (-661, 157, 115)
     ego_rot_quat = (0, 0, 0.3826834, 0.9238795)
     distance_m = 120
     speed_kph = 70
@@ -64,8 +64,8 @@ def main():
                 
                 # ... (setup scenario dan vehicle sama) ...
                 scenario = Scenario('west_coast_usa', f'{name}_trial_{trial}')
-                ego_vehicle = Vehicle('ego_vehicle', model='etkc', licence='EGO', colour='Silver')
-                other_vehicle = Vehicle('other_vehicle', model='etkc', licence='OTHER', colour='Red')
+                ego_vehicle = Vehicle('ego_vehicle', model='etk800', licence='EGO', colour='Silver')
+                other_vehicle = Vehicle('other_vehicle', model='etk800', licence='OTHER', colour='Red')
                 scenario.add_vehicle(ego_vehicle, pos=ego_pos, rot_quat=ego_rot_quat)
                 scenario.add_vehicle(other_vehicle, pos=pos2['pos'], rot_quat=pos2['rot_quat'])
                 scenario.make(bng)
