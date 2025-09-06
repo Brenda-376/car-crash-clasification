@@ -40,7 +40,7 @@ def main():
     beamng = BeamNGpy('localhost', 64256, home=SIMULATOR_PATH, user=BNG_USER)
     
     # ... (Bagian Kalkulasi Posisi tidak berubah) ...
-    ego_pos = (-661, 157, 118)
+    ego_pos = (-661, 157, 105)
     ego_rot_quat = (0, 0, 0.3826834, 0.9238795)
     distance_m = 120
     speed_kph = 70
@@ -64,7 +64,7 @@ def main():
                 
                 # ... (setup scenario dan vehicle sama) ...
                 scenario = Scenario('west_coast_usa', f'{name}_trial_{trial}')
-                ego_vehicle = Vehicle('ego_vehicle', model='etkc', licence='EGO', colour='Yellow')
+                ego_vehicle = Vehicle('ego_vehicle', model='etkc', licence='EGO', colour='Silver')
                 other_vehicle = Vehicle('other_vehicle', model='etkc', licence='OTHER', colour='Red')
                 scenario.add_vehicle(ego_vehicle, pos=ego_pos, rot_quat=ego_rot_quat)
                 scenario.add_vehicle(other_vehicle, pos=pos2['pos'], rot_quat=pos2['rot_quat'])
@@ -76,9 +76,9 @@ def main():
                     bng.step(1)
 
                 imu = AdvancedIMU('ego_imu', bng, ego_vehicle, is_send_immediately=True)
-                lidar = Lidar('lidar_360', bng, ego_vehicle, requested_update_time= 0.05,
+                lidar = Lidar('lidar_360', bng, ego_vehicle, requested_update_time= 0.2,
                               pos=(0, 0, 1.7), is_360_mode=True, vertical_angle=26.9,
-                              vertical_resolution=64, frequency=50, max_distance=120,
+                              vertical_resolution=64, frequency=5, max_distance=120,
                               is_streaming=True, is_visualised=True)
                 
                 is_crashed = False
