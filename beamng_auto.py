@@ -31,7 +31,7 @@ def save_lidar_data_to_csv(filepath, streaming_data):
 # --- (Konfigurasi Utama tidak berubah) ---
 SIMULATOR_PATH = 'D:\\BeamNG\\BeamNG.tech.v0.32.5.0\\'
 BNG_USER = "C:\\Users\\Brenda\\AppData\\Local\\BeamNG.drive"
-CRASH_THRESHOLD_G = 6.0
+CRASH_THRESHOLD_G = 2.0
 RECORD_DURATION_AFTER_CRASH = 3
 TRIAL_COUNT = 15
 
@@ -64,7 +64,7 @@ def main():
                 
                 # ... (setup scenario dan vehicle sama) ...
                 scenario = Scenario('west_coast_usa', f'{name}_trial_{trial}')
-                ego_vehicle = Vehicle('ego_vehicle', model='van', licence='EGO', colour='Yellow')
+                ego_vehicle = Vehicle('ego_vehicle', model='engine_props', licence='EGO', colour='Yellow')
                 other_vehicle = Vehicle('other_vehicle', model='van', licence='OTHER', colour='Red')
                 scenario.add_vehicle(ego_vehicle, pos=ego_pos, rot_quat=ego_rot_quat)
                 scenario.add_vehicle(other_vehicle, pos=pos2['pos'], rot_quat=pos2['rot_quat'])
