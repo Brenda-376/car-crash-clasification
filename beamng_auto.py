@@ -31,7 +31,7 @@ def save_lidar_data_to_csv(filepath, streaming_data):
 # --- (Konfigurasi Utama tidak berubah) ---
 SIMULATOR_PATH = 'D:\\BeamNG\\BeamNG.tech.v0.32.5.0\\'
 BNG_USER = "C:\\Users\\Brenda\\AppData\\Local\\BeamNG.drive"
-CRASH_THRESHOLD_G = 10.0
+CRASH_THRESHOLD_G = 6.0
 RECORD_DURATION_AFTER_CRASH = 3
 TRIAL_COUNT = 15
 
@@ -106,6 +106,7 @@ def main():
                     # --- ADDED: Mengambil dan memproses data Lidar di setiap frame ---
                     lidar_data = lidar.poll()
                     print(lidar_data)
+                    print(f"Dimensi Point Cloud: {points.shape} (Titik, Koordinat) | Dimensi Warna: {colors.shape} (Titik, RGBA)", end='\r')
                     if lidar_data and 'pointCloud' in lidar_data:
                         points = lidar_data['pointCloud'].reshape(-1, 3)
                         colors = lidar_data['colours'].reshape(-1, 4)
