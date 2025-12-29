@@ -1,0 +1,61 @@
+0     -4.819830    -21.060510  \n",
+       "25%       -0.019040     -0.021420     -0.017862  \n",
+       "50%        0.000020     -0.000040      0.000010  \n",
+       "75%        0.019870      0.018240      0.021612  \n",
+       "max        6.089580      6.463000     14.051690  "
+      ]
+     },
+     "execution_count": 5,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df.describe()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "subject      0\n",
+       "class        0\n",
+       "scenario     0\n",
+       "timestamp    0\n",
+       "accX         0\n",
+       "accY         0\n",
+       "accZ         0\n",
+       "gyrX         0\n",
+       "gyrY         0\n",
+       "gyrZ         0\n",
+       "dtype: int64"
+      ]
+     },
+     "execution_count": 6,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df.isnull().sum()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "0"
+      ]
+     },
+     "execution_count": 7,
+     "metadata": {},
+     "output_type": "execute_result"
+    

@@ -1,0 +1,11 @@
+.h5\n",
+      "18/18 [==============================] - 1s 32ms/step - loss: 0.3019 - accuracy: 0.8967 - val_loss: 0.3102 - val_accuracy: 0.8713\n",
+      "Epoch 67/100\n",
+      "17/18 [===========================>..] - ETA: 0s - loss: 0.2996 - accuracy: 0.8915\n",
+      "Epoch 00067: saving model to ./model\\model_imu_cnn2d_melspectogram.h5\n",
+      "18/18 [==============================] - 1s 29ms/step - loss: 0.3084 - accuracy: 0.8897 - val_loss: 0.3082 - val_accuracy: 0.8713\n",
+      "Epoch 68/100\n",
+      "18/18 [==============================] - ETA: 0s - loss: 0.3152 - accuracy: 0.8897\n",
+      "Epoch 00068: saving model to ./model\\model_imu_cnn2d_melspectogram.h5\n",
+      "18/18 [==============================] - 1s 38ms/step - loss: 0.3152 - accuracy: 0.8897 - val_loss: 0.3133 - val_accuracy: 0.8614\n",
+  

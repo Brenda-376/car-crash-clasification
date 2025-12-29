@@ -1,0 +1,20 @@
+A77OKUqlUqu8mAACgPrz00kvZZpttMnHixBx77LF19j355JPp1KlTHnzwwey6667rPP7rX/96nnvuudxwww35z3/+kzZt2uT2229Pv3791qpt2bJlLrroonzlK195P6YCAMBGwpICAAB8aM2dOzfLly/P3nvvvV71l1xySXr27JltttkmW221VSZNmpT58+cnSVq3bp2jjjoqgwYNypAhQ3LhhRdmwYIF5WNPOumkHHvssRkwYEB++MMf5oknnnhf5gQAQP0SuAIA8KHVtGnT9a69/vrr881vfjNHH310pk2blpqamnz1q1/NihUryjWXX355Zs6cmT59+uS6667LTjvtlFmzZiVJzjzzzMyZMycHHHBAbr311nTr1i1TpkwpfE4AANQvSwoAAPCh9eqrr6Z169b5yU9+8o5LCowcOTKPPPJIbrnllnLNgAED8u9//zs1NTXrPH/v3r2z22675Sc/+cla+w4//PAsXbo0v/vd7wqdEwAA9csTrgAAfGhtueWWOfXUU3PKKafkV7/6VZ544onMmjUrl1122Vq1H//4x3P//ffnz3/+cx577LGcfvrpue+++8r7582bl7Fjx2bmzJl56qmnMm3atDz22GPp2rVrli1blhNPPDG33357nnrqqdx9992577770rVr1w9yugAAfAAa1ncDAABQn04//fQ0bNgw3/3ud/Pss89m2223zQknnLBW3QknnJCampp86UtfSkVFRQ4//PCMGDEiN910U5KkWbNm+fvf/54rr7wyL7zwQrbddtuceOKJOf7447Nq1aq88MILOfLII/Pcc8+lbdu2Ofjgg3PWWWd90NMFAOB9ZkkBAAAAAICCWFIAAAAAAKAgAlcAAAAAgIIIXAEAAAAACiJwBQAAAAAoiMAVAAAAAKAgAlcAAAAAgIIIXAEAAAAACiJwBQAAAAAoiMAVAAAAAKAgAlcAAAAAgIIIXAEAAAAACiJwBQAAAAAoyP8D3FyqPAb3ipwAAAAASUVORK5CYII=",
+      "text/plain": [
+       "<Figure size 1650x550 with 1 Axes>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "plt.figure(figsize=(16.5, 5.5))\n",
+    "plt.title('Original Data by Crash Type')\n",
+    "sns.countplot(data=df, x='class', order=df[\"class\"].value_counts().index, palette = sns.color_palette(\"rocket\"))\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "m

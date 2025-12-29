@@ -1,0 +1,23 @@
+LylClTLOoMFdWDDz6oM2fOaOTIkTp16pT5MM9XXnlFffv2tbo9ABbgZGSUWvv27f9wnsPh4AGKuOxyc3NlGIb8/Px09OhR7dmzR998840aNmyozp07W90eAAsQdADYRqdOndSrVy898sgjOn78uK6//np5eXnp6NGjmjJlih599FGrWwRwmXEWKQDb2Lp1q9q2bStJ+uijjxQSEqJ9+/bp3Xff1auvvmpxdwCsQNABYBunTp1SQECAJGn58uXq1auXKlWqpJYtW5p3SQZQsRB0ANhG3bp1tWTJEmVkZGjZsmXq1KmTJOnw4cMKDAy0uDsAViDoALCNZ555RiNGjFDt2rXVokULRUVFSfptdOd8NxIEYH+cjAzAVjIzM3Xw4EE1adLEvJnl5s2bFRgYqOuvv97i7gBcbgQdAABgWxy6AgAAtkXQAQAAtkXQAQAAtkXQAQAAtkXQAQAAtkXQAQAAtkXQAQAAtvX/AAeOiyIgrQHBAAAAAElFTkSuQmCC",
+      "text/plain": [
+       "<Figure size 640x480 with 1 Axes>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "df['class'].value_counts().plot(kind='bar',\n",
+    "                                   title='Original Data by Crash Type')\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "image/png": "iVBORw0KGgoAAAANSUhEUgAAAjoAAAHeCAYAAACSdaHJAAAAOXRFWHRTb2Z0d2FyZQBNYXRwbG90bGliIHZlcnNpb24zLjUuMywgaHR0cHM6Ly9tYXRwbG90bGliLm9yZy/NK7nSAAAACXBIWXMAAA9hAAAPYQGoP6dpAAA3lUlEQVR4nO3deXRV9b3//9cxIYcQkmMGMkkYrBjAANbYhoDIIIQpRIYWamouKAIuEExJvghqK7UKIijWolxqrVTERq+A2gZSYpmaC2EIjRWKXKoMQRJCIZxAiich7t8f/tjLQ8IQpkM+PB9rnbXYn/3eZ7/3bjEvPnuIw7IsSwAAAAa6ydcNAAAAXC0EHQAAYCyCDgAAMBZBBwAAGIugAwAAjEXQAQAAxiLoAAAAYxF0AACAsQg6AADAWAQd4AIcDsdFfdatW3dZ+5k5c6YcDsclbbtu3bor0sPl7Ptcn8WLF1/znq6GXr16qVevXtd0n23atFFqaupV3ce+ffvkcDg0b968etfPmzdPDodD+/btu6p9AFeLv68bAK53mzZt8lr+1a9+pb

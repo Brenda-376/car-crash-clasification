@@ -1,0 +1,41 @@
+how()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Total subjects in the experiment: 1\n",
+      "\n",
+      "{'subject1'}\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(f\"Total subjects in the experiment: {len(set(df['subject']))}\\n\")\n",
+    "print(set(df['subject']))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<AxesSubplot:>"
+      ]
+     },
+     "execution_count": 14,
+     "metadata": {},
+     "output_type": "execute_result"
+    },
+    {
+     "data": {
+      "image/png": "iVBORw0KGgoAAAANSUhEUgAAAxEAAAKZCAYAAADH86ZnAAAAOXRFWHRTb2Z0d2FyZQBNYXRwbG90bGliIHZlcnNpb24zLjUuMywgaHR0cHM6Ly9tYXRwbG90bGliLm9yZy/NK7nSAAAACXBIWXMAAA9hAAAPYQGoP6dpAAEAAElEQVR4nOzdd1hTVx8H8G+AJOwAspHtHrhnXXWP1llXrXVWbd3WundVqna4uuzQDsVd7VtXHXVTFWSooGwZsvcMK+8faCBC0GAgUL+f57nPY07Ovfd3jskN5557zhHIZDIZiIiIiIiIXpKWpgMgIiIiIqK6hY0IIiIiIiJSCRsRRERERESkEjYiiIiIiIhIJWxEEBERERGRStiIICIiIiIilbARQUREREREKmEjgoiIiIiIVMJGBBERERERqYSNCCIiIiIiUgkbEURERERENeTq1at4++23YWtrC4FAgBMnTrxwnytXrqBdu3bQ1dWFi4sLvvvuu3J5jh07hmbNmkEsFqNZs2b4448/qiH6UmxEEBERERHVkOzsbLRq1Qq7d+9+qfzh4eEYPHgwunfvDh8fH6xYsQLz5s3DsWPH5Hk8PT0xduxYTJw4EX5+fpg4cSLGjBmDW7duVVcxIJDJZLJqOzoREREREVVIIBDgjz/+wPDhw5XmWbp0Kf78808EBgbK02bNmgU/Pz94enoCAMaOHYuMjAycOXNGnmfgwIEwNTWFh4

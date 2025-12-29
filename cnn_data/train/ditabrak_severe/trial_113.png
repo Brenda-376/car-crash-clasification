@@ -1,0 +1,11 @@
+=========] - 1s 32ms/step - loss: 0.3406 - accuracy: 0.8827 - val_loss: 0.3186 - val_accuracy: 0.8713\n",
+      "Epoch 55/100\n",
+      "17/18 [===========================>..] - ETA: 0s - loss: 0.3140 - accuracy: 0.8787\n",
+      "Epoch 00055: saving model to ./model\\model_imu_cnn2d_melspectogram.h5\n",
+      "18/18 [==============================] - 1s 37ms/step - loss: 0.3179 - accuracy: 0.8739 - val_loss: 0.3187 - val_accuracy: 0.8713\n",
+      "Epoch 56/100\n",
+      "18/18 [==============================] - ETA: 0s - loss: 0.3142 - accuracy: 0.8844\n",
+      "Epoch 00056: saving model to ./model\\model_imu_cnn2d_melspectogram.h5\n",
+      "18/18 [==============================] - 1s 38ms/step - loss: 0.3142 - accuracy: 0.8844 - val_loss: 0.3179 - val_accuracy: 0.8713\n",
+      "Epoch 57/100\n",
+      "18/18 [=======

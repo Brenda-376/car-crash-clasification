@@ -1,0 +1,12 @@
+n",
+    "                    callbacks=[callback, checkpoint])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 41,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "image/png": "iVBORw0KGgoAAAANSUhEUgAABR8AAAIhCAYAAADHFs2PAAAAOXRFWHRTb2Z0d2FyZQBNYXRwbG90bGliIHZlcnNpb24zLjUuMywgaHR0cHM6Ly9tYXRwbG90bGliLm9yZy/NK7nSAAAACXBIWXMAAA9hAAAPYQGoP6dpAAEAAElEQVR4nOzddXhTZxsG8DtJ3SnUoI6Uoi3ubsUZtuGsMBiyITNgDDbmHzCmTLANGDAchgx3lxb3GtBCBeqanO+PQ5OcJnVJKffvunpdfU/OOXnTli19+ohMEAQBRERERERERERERCVMbugNEBERERERERERUcXE4CMRERERERERERGVCgYfiYiIiIiIiIiIqFQw+EhERERERERERESlgsFHIiIiIiIiIiIiKhUMPhIREREREREREVGpYPCRiIiIiIiIiIiISgWDj0RERERERERERFQqGHwkIiIiIiIiIiKiUsHgI1ERyWSyAn0cOXKkWM8zf/58yGSyIl175MiREtlDeTdmzBh4enrm+nh0dDRMTEzw+uuv53pOQkICLCws0Ldv3wI/76pVqyCTyRAaGlrgvWiTyWSYP39+gZ8v2+PHjzF//nwEBQXpPFacn5eSkpmZCWdnZ8hk

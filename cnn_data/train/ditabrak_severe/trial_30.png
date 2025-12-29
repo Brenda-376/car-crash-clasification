@@ -1,0 +1,54 @@
+ion Loss')\n",
+    "plt.xlabel('Epoch')\n",
+    "plt.ylabel('Loss')\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 42,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Val loss: 0.29394879937171936\n",
+      "Val accuracy: 0.8811880946159363\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Definisikan custom_objects untuk layer kustom Kapre\n",
+    "custom_objects = {\n",
+    "    'STFT': STFT,\n",
+    "    'Magnitude': Magnitude,\n",
+    "    'ApplyFilterbank': ApplyFilterbank,\n",
+    "    'MagnitudeToDecibel': MagnitudeToDecibel\n",
+    "}\n",
+    "\n",
+    "# Memuat model dengan custom_objects\n",
+    "model = load_model('./model/model_imu_cnn2d_melspectogram.h5', custom_objects=custom_objects)\n",
+    "score_val = model.evaluate(X_val, y_val, verbose = 0) \n",
+    "print('Val loss:', score_val[0]) \n",
+    "print('Val accuracy:', score_val[1])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 43,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Text(74.30937500000006, 0.5, 'Actual label')"
+      ]
+     },
+     "execution_count": 43,
+     "metadata": {},
+     "output_type": "execute_result"
+    },
+    {
+     "data": {
+      "image/png": "iVBORw0KGgoA
